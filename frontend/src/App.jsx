@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage.jsx';
 import ComposePage from './pages/ComposePage.jsx';
 import InboxPage from './pages/InboxPage.jsx';
 import ThreadPage from './pages/ThreadPage.jsx';
+import ForwardPage from './pages/ForwardPage.jsx';
 import './styles/global.css';
 
 function AppShell({ children }) {
@@ -96,6 +97,14 @@ export default function App() {
         element={
           <RequireAuth>
             <ThreadPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={ROUTES.FORWARD}
+        element={
+          <RequireAuth>
+            <ForwardPage />
           </RequireAuth>
         }
       />

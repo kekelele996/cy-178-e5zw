@@ -25,8 +25,19 @@ module.exports = {
     PENDING: 'pending',
     DELIVERED: 'delivered',
     SKIPPED: 'skipped',
-    REPLIED: 'replied'
+    REPLIED: 'replied',
+    // 限时转投：到期未回复也未跳过 → 回到寄件人待转投区
+    AWAITING_FORWARD: 'awaiting_forward',
+    // 寄件人在待转投区撤回 → 永久关闭
+    WITHDRAWN: 'withdrawn',
+    // 转投过一次后再次到期 → 自动永久关闭（转投只有一次）
+    CLOSED: 'closed'
   },
+
+  // 收信人处理时限（毫秒）：72 小时；转投后重新计时
+  REPLY_WINDOW_MS: Number(process.env.REPLY_WINDOW_MS) || 72 * 60 * 60 * 1000,
+  // 到期扫描间隔（毫秒）
+  SWEEP_INTERVAL_MS: Number(process.env.SWEEP_INTERVAL_MS) || 60 * 1000,
 
   ROLES: {
     SENDER: 'sender',
@@ -48,9 +59,17 @@ module.exports = {
     LETTER_NOT_FOUND: '信件不存在',
     NOT_YOUR_LETTER: '这不是你的信件',
     LETTER_SENT: '信件已投入驿站',
+    CONTENT_EMPTY: '信件内容不能为空',
     FAVORITED: '已收藏',
     UNFAVORITED: '已取消收藏',
     SKIPPED: '已跳过这封信',
-    REPLIED: '回复已送达'
+    REPLIED: '回复已送达',
+    FORWARDED: '信件已重新投入驿站',
+    WITHDRAWN: '信件已撤回，不会再被投出',
+    LETTER_EXPIRED: '这封信的处理时限已过',
+    LETTER_NOT_WAITING: '这封信当前不在待转投区',
+    FORWARD_USED_UP: '这封信已经转投过，不能再次转投',
+    NO_FORWARD_TARGETS: '驿站暂时还没有可以接收的旅人，再等等吧',
+    CONFLICT: '信件状态刚刚发生了变化，请刷新后重试'
   }
 };

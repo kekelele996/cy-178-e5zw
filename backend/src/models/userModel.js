@@ -23,6 +23,18 @@ const UserModel = {
       .get(id);
   },
 
+  // 转投时随机选人：排除寄件人本人，也排除上一位收信人（不会回到旧收信人）
+  findRandomOtherExcept(senderId, excludedIds = []) {
+    const exclusions = [senderId, ...excludedIds.filter((x) => x != null)];
+    const placeholders = exclusions.map(() => '?').join(', ');
+    return db
+      .prepare(
+        `SELECT id FROM users WHERE id NOT IN (${placeholders})
+         ORDER BY RANDOM() LIMIT 1`
+      )
+      .get(...exclusions);
+  },
+
   countOthers(id) {
     const row = db.prepare('SELECT COUNT(*) AS c FROM users WHERE id != ?').get(id);
     return row.c;

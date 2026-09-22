@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { LABELS } from '../config/constants.js';
+import { LABELS, formatRemaining } from '../config/constants.js';
 import { LetterApi } from '../services/letterApi.js';
 
 function formatTime(ts) {
@@ -17,6 +17,12 @@ export default function ThreadPage() {
   const [reply, setReply] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const load = async () => {
     setLoading(true);
@@ -59,6 +65,11 @@ export default function ThreadPage() {
   if (loading) return <div className="loading">加载对话中…</div>;
   if (!data) return <div className="empty-state">{error || '无法加载对话'}</div>;
 
+  // 只有仍在 72h 处理时限内的"已送达"信，才允许首封回复
+  const live = data.status === 'delivered' && data.expiresAt && data.expiresAt > now;
+  const inConversation = data.status === 'replied';
+  const canReply = live || inConversation;
+
   return (
     <div className="thread-wrap">
       <div className="thread-head">
@@ -80,6 +91,12 @@ export default function ThreadPage() {
         </div>
       </div>
 
+      {live && (
+        <div className="deadline-bar">
+          收信处理时限 {formatRemaining(data.expiresAt - now)}，超时未回复也未跳过，信件将退回寄件人
+        </div>
+      )}
+
       <div className="message-list">
         {data.messages.map((m) => (
           <div key={m.id} className={`msg-bubble ${m.fromMe ? 'me' : 'them'}`}>
@@ -89,25 +106,31 @@ export default function ThreadPage() {
         ))}
       </div>
 
-      <div className="reply-box">
-        <textarea
-          className="reply-text"
-          placeholder={LABELS.REPLY_PLACEHOLDER}
-          value={reply}
-          onChange={(e) => setReply(e.target.value)}
-          maxLength={2000}
-        />
-        <div className="reply-footer">
-          <div className="error-text" style={{ margin: 'auto 0' }}>{error}</div>
-          <button
-            className="big-btn"
-            onClick={submitReply}
-            disabled={submitting || !reply.trim()}
-          >
-            {submitting ? '寄出中…' : LABELS.SUBMIT_REPLY}
-          </button>
+      {canReply ? (
+        <div className="reply-box">
+          <textarea
+            className="reply-text"
+            placeholder={LABELS.REPLY_PLACEHOLDER}
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+            maxLength={2000}
+          />
+          <div className="reply-footer">
+            <div className="error-text" style={{ margin: 'auto 0' }}>{error}</div>
+            <button
+              className="big-btn"
+              onClick={submitReply}
+              disabled={submitting || !reply.trim()}
+            >
+              {submitting ? '寄出中…' : LABELS.SUBMIT_REPLY}
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="reply-box closed-box">
+          {error ? <span className="error-text">{error}</span> : '这封信的处理时限已过，回复入口已关闭。'}
+        </div>
+      )}
     </div>
   );
 }

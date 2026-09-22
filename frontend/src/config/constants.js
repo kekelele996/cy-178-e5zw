@@ -15,6 +15,8 @@ export const ENDPOINTS = {
   SEND_LETTER: `${API_BASE}/api/letters`,
   REPLY_LETTER: (id) => `${API_BASE}/api/letters/${id}/reply`,
   SKIP_LETTER: (id) => `${API_BASE}/api/letters/${id}/skip`,
+  FORWARD_LETTER: (id) => `${API_BASE}/api/letters/${id}/forward`,
+  WITHDRAW_LETTER: (id) => `${API_BASE}/api/letters/${id}/withdraw`,
   FAVORITE_LETTER: (id) => `${API_BASE}/api/letters/${id}/favorite`,
   THREAD: (id) => `${API_BASE}/api/letters/${id}/thread`,
   INBOX: `${API_BASE}/api/inbox`
@@ -31,7 +33,8 @@ export const ROUTES = {
   HOME: '/',
   COMPOSE: '/compose',
   INBOX: '/inbox',
-  THREAD: '/thread/:id'
+  THREAD: '/thread/:id',
+  FORWARD: '/forward/:id'
 };
 
 export const LABELS = {
@@ -56,10 +59,19 @@ export const LABELS = {
   REPLY: '回复',
   SKIP: '跳过',
   SEND: '投入驿站',
+  AWAITING_FORWARD: '待转投',
+  FORWARD: '转投',
+  WITHDRAW: '撤回',
+  CONFIRM_WITHDRAW: '撤回后这封信将永久关闭，确定吗？',
+  FORWARD_HINT: '72 小时已过，这封信回到了你的待转投区。收信信息已隐藏，你可以修改正文后转投给下一位陌生人（只能转投一次），也可以撤回永久关闭。',
+  FORWARD_SEND: '修改后转投',
+  FORWARD_KEEP: '不修改，直接转投',
+  FORWARD_SENDING: '转投中…',
   CONTENT_PLACEHOLDER: '写下此刻想对陌生人说的话……',
   EMPTY_SENT: '还没有寄出的信',
   EMPTY_RECEIVED: '信箱空空，等一封信',
   EMPTY_CONVERSATIONS: '没有在持续的对话',
+  EMPTY_AWAITING: '没有等待转投的信',
   BACK: '返回',
   REPLY_PLACEHOLDER: '回信给这位陌生人……',
   SUBMIT_REPLY: '寄出回复',
@@ -71,5 +83,22 @@ export const STATUS_TEXT = {
   pending: '待处理',
   delivered: '已送达',
   skipped: '已跳过',
-  replied: '已回复'
+  replied: '已回复',
+  awaiting_forward: '待转投',
+  withdrawn: '已撤回',
+  closed: '已关闭'
 };
+
+// 收信人处理时限：72 小时
+export const REPLY_WINDOW_MS = 72 * 60 * 60 * 1000;
+
+// 把剩余毫秒格式化为 "还剩 71:59:03"
+export function formatRemaining(ms) {
+  if (ms <= 0) return '已超时';
+  const total = Math.floor(ms / 1000);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const pad = (n) => String(n).padStart(2, '0');
+  return `还剩 ${pad(h)}:${pad(m)}:${pad(s)}`;
+}
