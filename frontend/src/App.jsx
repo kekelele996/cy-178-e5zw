@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage.jsx';
 import ComposePage from './pages/ComposePage.jsx';
 import InboxPage from './pages/InboxPage.jsx';
 import ThreadPage from './pages/ThreadPage.jsx';
+import ReroutePage from './pages/ReroutePage.jsx';
 import './styles/global.css';
 
 function AppShell({ children }) {
@@ -96,6 +97,14 @@ export default function App() {
         element={
           <RequireAuth>
             <ThreadPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={ROUTES.REROUTE}
+        element={
+          <RequireAuth>
+            <ReroutePage />
           </RequireAuth>
         }
       />

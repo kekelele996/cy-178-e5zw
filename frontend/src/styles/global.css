@@ -499,3 +499,37 @@ input, textarea {
   color: var(--muted);
   padding: 40px 0;
 }
+
+.icon-btn.primary {
+  color: var(--accent);
+  border-color: var(--accent-soft);
+  background: #fff3ee;
+}
+
+.icon-btn.danger,
+.big-btn.danger {
+  color: #b4433a;
+  border-color: #e6c4c0;
+  background: #fbecea;
+}
+
+.big-btn.danger {
+  border-style: solid;
+}
+
+.countdown {
+  color: var(--accent);
+  font-style: normal;
+  font-size: 12px;
+}
+
+.reroute-hint {
+  background: #fff7e8;
+  border: 1px solid #ecdcb8;
+  color: #8a6d3b;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0 0 16px;
+}

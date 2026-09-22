@@ -23,6 +23,14 @@ const UserModel = {
       .get(id);
   },
 
+  findRandomOtherExcept(id, excludedId) {
+    return db
+      .prepare(
+        'SELECT id FROM users WHERE id != ? AND id != ? ORDER BY RANDOM() LIMIT 1'
+      )
+      .get(id, excludedId);
+  },
+
   countOthers(id) {
     const row = db.prepare('SELECT COUNT(*) AS c FROM users WHERE id != ?').get(id);
     return row.c;

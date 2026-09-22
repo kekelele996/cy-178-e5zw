@@ -23,6 +23,18 @@ export const LetterApi = {
   thread(id) {
     return api.request(ENDPOINTS.THREAD(id));
   },
+  reroute(id) {
+    return api.request(ENDPOINTS.REROUTE_LETTER(id));
+  },
+  submitReroute(id, content) {
+    return api.request(ENDPOINTS.REROUTE_LETTER(id), {
+      method: 'POST',
+      body: JSON.stringify({ content })
+    });
+  },
+  withdraw(id) {
+    return api.request(ENDPOINTS.WITHDRAW_LETTER(id), { method: 'POST' });
+  },
   inbox() {
     return api.request(ENDPOINTS.INBOX);
   }

@@ -21,11 +21,19 @@ module.exports = {
     INBOX: '/api/inbox'
   },
 
+  // Time-limited re-routing window: the receiver has this long to reply or skip
+  REROUTE: {
+    WINDOW_MS: Number(process.env.LETTER_WINDOW_MS) || 72 * 60 * 60 * 1000
+  },
+
   LETTER_STATUS: {
     PENDING: 'pending',
     DELIVERED: 'delivered',
     SKIPPED: 'skipped',
-    REPLIED: 'replied'
+    REPLIED: 'replied',
+    RETURNED: 'returned',
+    REROUTED: 'rerouted',
+    WITHDRAWN: 'withdrawn'
   },
 
   ROLES: {
@@ -51,6 +59,14 @@ module.exports = {
     FAVORITED: '已收藏',
     UNFAVORITED: '已取消收藏',
     SKIPPED: '已跳过这封信',
-    REPLIED: '回复已送达'
+    REPLIED: '回复已送达',
+    EXPIRED: '这封信已经过了 72 小时，驿站已收回',
+    ALREADY_PROCESSED: '这封信已被处理，请刷新后再试',
+    NOT_REROUTABLE: '只有退回的信才能转投',
+    REROUTED: '信件已重新投出',
+    REROUTE_USED: '这封信已经转投过一次，不能再转投了',
+    NOT_WITHDRAWABLE: '只有待转投区里的信才能撤回',
+    WITHDRAWN: '信件已撤回，不会再被投递',
+    FAVORITE_CLOSED: '信件已关闭，不能再收藏'
   }
 };

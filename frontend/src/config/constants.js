@@ -17,6 +17,8 @@ export const ENDPOINTS = {
   SKIP_LETTER: (id) => `${API_BASE}/api/letters/${id}/skip`,
   FAVORITE_LETTER: (id) => `${API_BASE}/api/letters/${id}/favorite`,
   THREAD: (id) => `${API_BASE}/api/letters/${id}/thread`,
+  REROUTE_LETTER: (id) => `${API_BASE}/api/letters/${id}/reroute`,
+  WITHDRAW_LETTER: (id) => `${API_BASE}/api/letters/${id}/withdraw`,
   INBOX: `${API_BASE}/api/inbox`
 };
 
@@ -31,7 +33,8 @@ export const ROUTES = {
   HOME: '/',
   COMPOSE: '/compose',
   INBOX: '/inbox',
-  THREAD: '/thread/:id'
+  THREAD: '/thread/:id',
+  REROUTE: '/reroute/:id'
 };
 
 export const LABELS = {
@@ -51,6 +54,7 @@ export const LABELS = {
   SENT: '发出的',
   RECEIVED: '收到的',
   CONVERSATIONS: '对话中',
+  REROUTES: '待转投',
   FAVORITE: '收藏',
   UNFAVORITE: '取消收藏',
   REPLY: '回复',
@@ -60,16 +64,28 @@ export const LABELS = {
   EMPTY_SENT: '还没有寄出的信',
   EMPTY_RECEIVED: '信箱空空，等一封信',
   EMPTY_CONVERSATIONS: '没有在持续的对话',
+  EMPTY_REROUTES: '没有到期退回的信',
   BACK: '返回',
   REPLY_PLACEHOLDER: '回信给这位陌生人……',
   SUBMIT_REPLY: '寄出回复',
   SENT_FROM_ME: '我寄出',
-  SENT_FROM_STRANGER: '陌生人'
+  SENT_FROM_STRANGER: '陌生人',
+  REROUTE_HINT: '对方超过 72 小时未回复也未跳过，信已退回给你。原收信信息已隐藏，可修改正文后转投一次。',
+  REROUTE_USED_HINT: '这封信已转投过一次，不能再次转投，仅可撤回。',
+  REROUTE_SUBMIT: '修改后转投',
+  REROUTING: '转投中…',
+  WITHDRAW: '撤回',
+  WITHDRAW_CONFIRM: '撤回后这封信将永久关闭，确定吗？',
+  TIME_LEFT: (hours) => `剩 ${hours} 小时`,
+  RETURNED_HINT: '已退回，请到「待转投」处理'
 };
 
 export const STATUS_TEXT = {
   pending: '待处理',
   delivered: '已送达',
   skipped: '已跳过',
-  replied: '已回复'
+  replied: '已回复',
+  returned: '已退回',
+  rerouted: '已转投',
+  withdrawn: '已撤回'
 };

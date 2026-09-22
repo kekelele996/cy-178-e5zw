@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { LABELS } from '../config/constants.js';
+import { LABELS, STATUS_TEXT } from '../config/constants.js';
 import { LetterApi } from '../services/letterApi.js';
+
+const CLOSED_STATUSES = ['returned', 'withdrawn', 'skipped'];
 
 function formatTime(ts) {
   const d = new Date(ts);
@@ -59,10 +61,19 @@ export default function ThreadPage() {
   if (loading) return <div className="loading">加载对话中…</div>;
   if (!data) return <div className="empty-state">{error || '无法加载对话'}</div>;
 
+  const closed = CLOSED_STATUSES.includes(data.status);
+
   return (
     <div className="thread-wrap">
       <div className="thread-head">
-        <h2>对话链 #{id}</h2>
+        <h2>
+          对话链 #{id}
+          {data.status && STATUS_TEXT[data.status] && data.status !== 'delivered' && (
+            <span className="badge" style={{ marginLeft: 10 }}>
+              {STATUS_TEXT[data.status]}
+            </span>
+          )}
+        </h2>
         <div>
           <button
             className={`icon-btn ${data.favorited ? 'on' : ''}`}
@@ -90,23 +101,31 @@ export default function ThreadPage() {
       </div>
 
       <div className="reply-box">
-        <textarea
-          className="reply-text"
-          placeholder={LABELS.REPLY_PLACEHOLDER}
-          value={reply}
-          onChange={(e) => setReply(e.target.value)}
-          maxLength={2000}
-        />
-        <div className="reply-footer">
-          <div className="error-text" style={{ margin: 'auto 0' }}>{error}</div>
-          <button
-            className="big-btn"
-            onClick={submitReply}
-            disabled={submitting || !reply.trim()}
-          >
-            {submitting ? '寄出中…' : LABELS.SUBMIT_REPLY}
-          </button>
-        </div>
+        {closed ? (
+          <div className="empty-state" style={{ padding: '20px 0' }}>
+            这封信已关闭（{STATUS_TEXT[data.status]}），不能再回复。
+          </div>
+        ) : (
+          <>
+            <textarea
+              className="reply-text"
+              placeholder={LABELS.REPLY_PLACEHOLDER}
+              value={reply}
+              onChange={(e) => setReply(e.target.value)}
+              maxLength={2000}
+            />
+            <div className="reply-footer">
+              <div className="error-text" style={{ margin: 'auto 0' }}>{error}</div>
+              <button
+                className="big-btn"
+                onClick={submitReply}
+                disabled={submitting || !reply.trim()}
+              >
+                {submitting ? '寄出中…' : LABELS.SUBMIT_REPLY}
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
